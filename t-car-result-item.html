@@ -1,27 +1,90 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../t-text-container/travel-element-styles.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<!--
+A comment describing this element
 
+Example:
+
+    <my-elem></my-elem>
+
+Example:
+
+    <my-elem>
+      <h2>Hello my-elem</h2>
+    </my-elem>
+
+@demo demo/index.html
+-->
 <dom-module id="t-car-result-item">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello [[prop1]]</h2>
-  </template>
+    <template>
+        <style include="iron-flex"></style>
+        <style include="travel-element-styles">
+        :host {
+            display: block;
+        }
+        </style>
+        <h1>Car Result Item!</h1>
+    </template>
+    <script>
+    $(function() {
+        Polymer({
+            is: 't-car-result-item',
+            properties: {
+                name: {
+                    type: String,
+                    value: ''
+                },
+                vehicleType: {
+                    type: String,
+                    value: ''
+                },
+                location: {
+                    type: String,
+                    value: ''
+                },
+                price: {
+                    type: String,
+                    value: ''
+                },
+                deal: {
+                    type: String,
+                    value: ''
+                },
+                tag: {
+                    type: String,
+                    value: ''
+                },
+                imageUrl: {
+                    type: String,
+                    value: ''
+                },
+                itinerary: {
+                    type: Object,
+                    value: null,
+                    observer: '_onItineraryUpdate'
+                }
+            },
 
-  <script>
-    Polymer({
+            _onItineraryUpdate: function() {
+                this._setItineraryProperties();
+            },
 
-      is: 't-car-result-item',
+            _setItineraryProperties: function() {
+                if (!this.itinerary) {
+                    return;
+                }
 
-      properties: {
-        prop1: {
-          type: String,
-          value: 't-car-result-item',
-        },
-      },
-
-    });
-  </script>
+                this.name = this.itinerary.name;
+                this.vehicleType = this.itinerary.vehicleType;
+                this.location = this.itinerary.pickupInfo.address;
+                this.price = this._getPrice();
+                this.deal = this._getDeal();
+                this.tag = this._getTag();
+                this.imageUrl = this.itinerary.heroImageUrl;
+                this.logo = this.itinerary.brand.logo;
+            }
+        });
+    })
+    </script>
 </dom-module>

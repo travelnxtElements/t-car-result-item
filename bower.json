@@ -1,14 +1,16 @@
 {
-  "name": "t-car-result-item",
-  "description": "A component for enlisting cars using mystique apis",
-  "main": "t-car-result-item.html",
-  "dependencies": {
-    "polymer": "Polymer/polymer#^1.4.0"
-  },
-  "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
-    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
-    "web-component-tester": "^4.0.0",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
-  }
+    "name": "t-car-result-item",
+    "description": "A component for enlisting cars using mystique apis",
+    "main": "t-car-result-item.html",
+    "dependencies": {
+        "polymer": "Polymer/polymer#^1.4.0"
+    },
+    "devDependencies": {
+        "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+        "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+        "web-component-tester": "^4.0.0",
+        "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
+        "t-text-container": "travelnxtelements/t-text-container#^1.1.0",
+        "t-shared-components": "atomelements/t-shared-components#^1.0.5"
+    }
 }
