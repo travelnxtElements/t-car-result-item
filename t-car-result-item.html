@@ -1,0 +1,27 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<dom-module id="t-car-result-item">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]</h2>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 't-car-result-item',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 't-car-result-item',
+        },
+      },
+
+    });
+  </script>
+</dom-module>
