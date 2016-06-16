@@ -1,0 +1,140 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../t-list/t-list.html">
+<link rel="import" href="../t-notify/t-notify.html">
+<link rel="import" href="t-car-result-item.html">
+<!--
+A comment describing this element
+
+Example:
+
+    <my-elem></my-elem>
+
+Example:
+
+    <my-elem>
+      <h2>Hello my-elem</h2>
+    </my-elem>
+
+@demo demo/index.html
+-->
+<dom-module id="t-car-result-page">
+    <template>
+        <style>
+        :host {
+            display: block;
+        }
+        t-car-result-item {
+
+        }
+        </style>
+        <t-list
+        	id="list"
+        	filter-api="[[apiBaseUrl]]api/car/filter/[[searchId]]/rates?token=[[authToken]]"
+        	filter-results-api="[[apiBaseUrl]]api/car/results/filter/[[searchId]]/rates?$top=20&token=[[authToken]]&$select=Name,Category,Capacity,Baggage,AirConditioning,Transmission,Doors,HeroImageUrl,IsPostPaid,Source,Id,Fare,PickupInfo,Brand" 
+        	with-sorting
+        	with-filter
+        	token-param="inventories"
+        	redirect-link="[[redirectLink]]"
+        	currency="[[currency]]"
+            auto
+            no-results-filtered-message="We could not find any cars for the filters you have applied."
+            no-results-found-message="We could not find any cars for your search."
+            no-results-filtered-for-search-term-message="We could not find any car names containing 'SEARCHTERM’."
+            sort-by="+desc">
+            <template>
+            <div>
+            <div>[[item.category]]</div>
+                <!-- <t-car-result-item itinerary=[[item]]>
+                </t-car-result-item> -->
+                </div>
+            </template>
+        </t-list>
+
+    </template>
+    <script>
+	    (function () {
+
+	    	var filterPayload = {
+	    		category : "Category",
+				group:"Category",
+				label: "",
+				name: "",
+				type: "Options"
+	    	};
+
+		    Polymer({
+		        is: 't-car-result-page',
+
+		        behaviors: [
+                    TravelNxt.Behaviors.DateBehavior,
+                    TravelNxt.Behaviors.CategoryResultBehavior
+		        ],
+
+		        observers: [
+		            '_searchIdUpdated(searchId, category)'
+		        ],
+
+		        properties: {
+
+                    /*
+                     * <p>This string is query string containing token value</p>
+                    */
+                    authToken: {
+                        type: String,
+                        value: ''
+                    },
+
+                    /*
+                     * <p>This property holds the value of api base URL</p>
+                    */
+                    apiBaseUrl: {
+                        type: String,
+                        value: ''
+                    },
+
+                    /*
+                     * <p>This property holds the value of web api URL format</p>
+                    */
+                    apiUrlFormat: {
+                        type: String,
+                        value: ''
+                    },
+		            searchId: {
+		                type: String,
+		                value: ''
+		            },
+
+		            category: {
+		                type: String,
+		                value: ''
+		            },
+
+		            currency: {
+		            	type: String,
+		            	value: 'USD'
+		            },
+
+		            redirectLink:{
+		            	type: String,
+		            	value:''
+		            },
+
+		            list:{
+		            	type: Array,
+		            	value: []
+		            }
+		        },
+
+		        _searchIdUpdated: function () {
+		        	filterPayload.name = this.category;
+		        	filterPayload.label = this.category;
+
+                    this.$.list.sortParams = [{ "key": "Name", "value": "$orderby=Name" }, { "key": "Rating", "value": "$orderby=Rating" , "default": true}, { "key": "Price", "value": "$orderby=MinFare/Fare/Amount"}];
+                    this.$.list.includeFilters = ["Price", "Location", "Brand", "Features"];
+		        	this.$.list.onApplyFilters([filterPayload]);
+		        }
+		    });
+	    	
+	    })();
+    </script>
+</dom-module>

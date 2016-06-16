@@ -1,29 +1,29 @@
 <!doctype html>
 <html>
   <head>
-    <title>t-car-result-item demo</title>
+    <title>t-car-result-page demo</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-
-    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-
-    <link rel="import" href="../t-car-result-item.html">
-
-    <style is="custom-style" include="demo-pages-shared-styles">
+    <link rel="import" href="../t-car-result-page.html">
+    <link rel="import" href="../../t-shared-components/theme.html">
+    <link rel="import" href="../../iron-icons/iron-icons.html">
+    <style>
+    html,
+    body {
+        font-family: 'Open sans';
+        margin: 5px;
+    }
     </style>
   </head>
   <body>
-
-    <div class="vertical-section-container centered">
-      <h3>Basic t-car-result-item Demo</h3>
-      <demo-snippet>
-        <template>
-          <t-car-result-item></t-car-result-item>
-        </template>
-      </demo-snippet>
-    </div>
-
+      <h3>Basic t-car-result-page Demo</h3>
+      <t-car-result-page
+        api-base-url="http://qa-mystiquecode.tavisca.com/"
+        auth-token="4v2ianqv5nhsfk5ylwwjxucy"
+        search-id="04420c19-66c1-4420-85a5-a1a70925a536"
+        api-url-format="/api/Session/SESSIONKEY"
+        category="Intermediate">
+      </t-car-result-page>
   </body>
 </html>
