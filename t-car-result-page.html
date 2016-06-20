@@ -43,12 +43,12 @@ Example:
             sort-by="+desc">
             <template>
             <div>
-            <!-- <div>[[item.category]]</div> -->
                 <t-car-result-item 
                     itinerary=[[item]]
-                    on-book-car-itinerary="_onBookItinerary">
+                    on-book-car-itinerary="_onBookItinerary"
+                    price=[[minPrice]]>
                 </t-car-result-item>
-                </div>
+            </div>
             </template>
         </t-list>
 
@@ -105,6 +105,11 @@ Example:
 		                type: String,
 		                value: ''
 		            },
+
+                    minPrice: {
+                        type: String,
+                        value: ''
+                    },
 
 		            currency: {
 		            	type: String,

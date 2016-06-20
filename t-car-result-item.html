@@ -26,14 +26,14 @@ Example:
         :host {
             display: block;
             margin-top: 10px;
-            border: solid black thin;
+            border-bottom: solid black thin;
             padding: 5px;
         }
         
         .imageArea {
             width: 100%;
             height: 150px;
-            margin: 10px 0 10px 0;
+            margin: 10px 0 50px 0;
         }
         
         .imageArea t-image {
@@ -52,9 +52,12 @@ Example:
             height: 100%;
         }
         </style>
-        <div class="imageArea">
-            <t-image src="{{itinerary.heroImageUrl}}"></t-image>
-        </div>
+        <template is="dom-if" if="[[isFirstItem]]">
+            <div class="imageArea">
+                <t-image src="{{imageUrl}}"></t-image>
+                <div><b>{{category}}</b> &nbsp;&nbsp;&nbsp;&nbsp;<b>{{price}}</b></div>
+            </div>
+        </template>
         <div><b>{{itinerary.name}}</b></div>
         <div>{{itinerary.vehicleType}}</div>
         <div>{{itinerary.pickupInfo.address}}</div>
@@ -87,6 +90,10 @@ Example:
                     type: String,
                     value: ''
                 },
+                showImage: {
+                    type: Boolean,
+                    value: false
+                },
                 itinerary: {
                     type: Object,
                     value: null,
@@ -100,6 +107,8 @@ Example:
                 if (this.itinerary && this.itinerary.fare) {
                     this._components = this.itinerary.fare.components;
                 }
+
+                this.isFirstItem = this.itinerary.isFirstItinerary;
             },
 
             _getDisplayFare: function(amount, checkIn, checkOut) {
