@@ -30,7 +30,7 @@ Example:
         <t-list
         	id="list"
         	filter-api="[[apiBaseUrl]]api/car/filter/[[searchId]]/rates?token=[[authToken]]"
-        	filter-results-api="[[apiBaseUrl]]api/car/results/filter/[[searchId]]/rates?token=[[authToken]]&$select=Name,Category,Capacity,Baggage,AirConditioning,Transmission,Doors,HeroImageUrl,IsPostPaid,Source,Id,Fare,PickupInfo,Brand" 
+        	filter-results-api="[[apiBaseUrl]]api/car/results/filter/[[searchId]]/rates?token=[[authToken]]&$select=Name,Category,Capacity,Baggage,AirConditioning,Transmission,Doors,HeroImageUrl,IsPostPaid,Source,Id,Fare,PickupInfo,DropoffInfo,Brand" 
         	with-filter
         	token-param="inventories"
         	redirect-link="[[redirectLink]]"
@@ -44,7 +44,9 @@ Example:
             <template>
             <div>
             <!-- <div>[[item.category]]</div> -->
-                <t-car-result-item itinerary=[[item]]>
+                <t-car-result-item 
+                    itinerary=[[item]]
+                    on-book-car-itinerary="_onBookItinerary">
                 </t-car-result-item>
                 </div>
             </template>
@@ -64,11 +66,6 @@ Example:
 
 		    Polymer({
 		        is: 't-car-result-page',
-
-		        behaviors: [
-                    TravelNxt.Behaviors.DateBehavior,
-                    TravelNxt.Behaviors.CategoryResultBehavior
-		        ],
 
 		        observers: [
 		            '_searchIdUpdated(searchId, category)'
@@ -126,14 +123,31 @@ Example:
 		        },
 
 		        _searchIdUpdated: function () {
+
 		        	filterPayload.name = this.category;
 		        	filterPayload.label = this.category;
 
-                    this.$.list.sortParams =[{ "key": "Price", "value": "$orderby=MinFare/Fare/Amount", "default": true }];
-                    this.$.list.includeFilters = ["Price", "Location", "Brand", "Features"];
-		        	this.$.list.onApplyFilters([filterPayload]);
+                    this.$.list.sortParams =[{ 
+                        key: "Price", 
+                        value: "$orderby=MinFare/Fare/Amount", 
+                        default: true 
+                    }];
+
+                    this.$.list.includeFilters = [
+                        "Price", 
+                        "Location", 
+                        "Brand", 
+                        "Features"
+                    ];
+                    
                     this.$.list.defaultFilters= [filterPayload];
-		        }
+
+		        	this.$.list.onApplyFilters([filterPayload]);
+		        },
+
+                _onBookItinerary: function (e) {
+                    console.log(e.detail);
+                }
 		    });
 	    	
 	    })();

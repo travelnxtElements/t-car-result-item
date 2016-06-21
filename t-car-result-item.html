@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../t-image/t-image.html">
+<link rel="import" href="../t-button/t-button.html">
 <link rel="import" href="../t-text-container/travel-element-styles.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../t-shared-lib/t-fare-behavior.html">
@@ -52,48 +53,37 @@ Example:
         }
         </style>
         <div class="imageArea">
-            <t-image src="{{imageUrl}}"></t-image>
+            <t-image src="{{itinerary.heroImageUrl}}"></t-image>
         </div>
-        <div><b>{{name}}</b></div>
-        <div>{{vehicleType}}</div>
-        <div>{{location}}</div>
+        <div><b>{{itinerary.name}}</b></div>
+        <div>{{itinerary.vehicleType}}</div>
+        <div>{{itinerary.pickupInfo.address}}</div>
         <div class="logoArea">
-            <t-image src="{{logo}}"></t-image>
+            <t-image src="{{itinerary.brand.logo}}"></t-image>
         </div>
-        <div>{{capacity}}</div>
-        <div>{{baggage}}</div>
-        <div>{{airConditioning}}</div>
-        <div>{{transmission}}</div>
-        <div>{{doors}}</div>
+        <div>{{itinerary.capacity}}</div>
+        <div>{{itinerary.baggage}}</div>
+        <div>{{itinerary.airConditioning}}</div>
+        <div>{{itinerary.transmission}}</div>
+        <div>{{itinerary.doors}}</div>
 
         <div>{{_getDisplayFare(_displayPrice.money.amount, itinerary.stayDuration.start.date, itinerary.stayDuration.end.date)}}</div>
+        <br>        
+        <div><b>pick-up from</b></div>
+        <div>[[itinerary.pickupInfo.address]]</div>
+        <br>
+        <div><b>drop-off to</b></div>
+        <div>[[itinerary.dropoffInfo.address]]</div>
+
+        <t-button id="search" class="primary row" on-click="_bookCar" type="button" label="book" /></t-button>
     </template>
     <script>
     (function() {
         Polymer({
             is: 't-car-result-item',
+
             properties: {
-                name: {
-                    type: String,
-                    value: ''
-                },
-                vehicleType: {
-                    type: String,
-                    value: ''
-                },
-                location: {
-                    type: String,
-                    value: ''
-                },
                 price: {
-                    type: String,
-                    value: ''
-                },
-                tag: {
-                    type: String,
-                    value: ''
-                },
-                imageUrl: {
                     type: String,
                     value: ''
                 },
@@ -107,31 +97,9 @@ Example:
             behaviors: [TravelNxt.Behaviors.FareBehavior],
 
             _onItineraryUpdate: function() {
-                this._setItineraryProperties();
-            },
-
-            _setItineraryProperties: function() {
-                if (!this.itinerary) {
-                    return;
+                if (this.itinerary && this.itinerary.fare) {
+                    this._components = this.itinerary.fare.components;
                 }
-
-                this.name = this.itinerary.name;
-                this.vehicleType = this.itinerary.vehicleType;
-                this.location = this.itinerary.pickupInfo.address;
-                this.imageUrl = this.itinerary.heroImageUrl;
-                this.logo = this.itinerary.brand.logo;
-
-                this.capacity = this.itinerary.capacity;
-                this.baggage = this.itinerary.baggage;
-                this.airConditioning = this.itinerary.airConditioning;
-                this.transmission = this.itinerary.transmission;
-                this.doors = this.itinerary.doors;
-                this._components = this.itinerary.fare.components;
-            },
-
-            _fareComponentsChanged: function(components) {
-                this._components = components;
-                var x = this._displayPrice;
             },
 
             _getDisplayFare: function(amount, checkIn, checkOut) {
@@ -139,6 +107,12 @@ Example:
                     return Math.ceil(amount / this._dateDiff(checkIn, checkOut));
                 }
                 return null;
+            },
+
+            _bookCar: function () {
+                this.fire('book-car-itinerary', {
+                    itineraryId: this.itinerary.id
+                });
             }
         });
     })();
