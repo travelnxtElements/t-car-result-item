@@ -25,9 +25,9 @@ Example:
         }
         </style>
         <t-list
-        	id="list"
-        	filter-api="[[apiBaseUrl]]api/car/filter/[[searchId]]/rates?token=[[authToken]]"
-        	filter-results-api="[[apiBaseUrl]]api/car/results/filter/[[searchId]]/rates?token=[[authToken]]&$select=Name,Category,Capacity,Baggage,AirConditioning,Transmission,Doors,HeroImageUrl,IsPostPaid,Source,Id,Fare,PickupInfo,DropoffInfo,Brand" 
+            id="list"
+            filter-api="[[apiBaseUrl]]api/car/filter/[[searchId]]/rates?token=[[authToken]]"
+            filter-results-api="[[apiBaseUrl]]api/car/results/filter/[[searchId]]/rates?token=[[authToken]]&$select=Name,Category,Capacity,Baggage,AirConditioning,Transmission,Doors,HeroImageUrl,IsPostPaid,Source,Id,Fare,PickupInfo,DropoffInfo,Brand" 
             with-filter
             update-filters
             token-param="inventories"
@@ -48,24 +48,24 @@ Example:
 
     </template>
     <script>
-	    (function () {
+        (function () {
 
-	    	var filterPayload = {
-	    		category : "Category",
-				group:"Category",
-				label: "",
-				name: "",
-				type: "Options"
-	    	};
+            var filterPayload = {
+                category: "Category",
+                group: "Category",
+                label: "",
+                name: "",
+                type: "Options"
+            };
 
-		    Polymer({
-		        is: 't-car-result-page',
+            Polymer({
+                is: 't-car-result-page',
 
-		        observers: [
-		            '_searchIdUpdated(searchId, category)'
-		        ],
+                observers: [
+                    '_searchIdUpdated(searchId, category)'
+                ],
 
-		        properties: {
+                properties: {
 
                     /*
                      * <p>This string is query string containing token value</p>
@@ -90,65 +90,67 @@ Example:
                         type: String,
                         value: ''
                     },
-		            searchId: {
-		                type: String,
-		                value: ''
-		            },
+                    searchId: {
+                        type: String,
+                        value: ''
+                    },
 
-		            category: {
-		                type: String,
-		                value: ''
-		            },
+                    category: {
+                        type: String,
+                        value: ''
+                    },
 
                     minPrice: {
                         type: String,
                         value: ''
                     },
 
-		            currency: {
-		            	type: String,
-		            	value: 'USD'
-		            },
+                    currency: {
+                        type: String,
+                        value: 'USD'
+                    },
 
-		            redirectLink:{
-		            	type: String,
-		            	value:''
-		            },
+                    redirectLink: {
+                        type: String,
+                        value: ''
+                    },
 
-		            list:{
-		            	type: Array,
-		            	value: []
-		            }
-		        },
+                    list: {
+                        type: Array,
+                        value: []
+                    }
+                },
 
-		        _searchIdUpdated: function () {
+                _searchIdUpdated: function (searchId, category) {
+                    if (!searchId || !category) {
+                        return;
+                    }
+                    filterPayload.name = category;
+                    filterPayload.label = category;
 
-		        	filterPayload.name = this.category;
-		        	filterPayload.label = this.category;
-
-                    this.$.list.sortParams =[{ 
-                        key: "Price", 
-                        value: "$orderby=MinFare/Fare/Amount", 
-                        default: true 
+                    this.$.list.sortParams = [{
+                        key: "Price",
+                        value: "$orderby=MinFare/Fare/Amount",
+                        default: true
                     }];
 
                     this.$.list.includeFilters = [
-                        "Price", 
-                        "Location", 
-                        "Brand", 
+                        "Price",
+                        "Location",
+                        "Brand",
                         "Features"
                     ];
-                    
-                    this.$.list.defaultFilters= [filterPayload];
 
-		        	this.$.list.onApplyFilters([filterPayload]);
-		        },
+                    this.$.list.defaultFilters = [filterPayload];
+                    this.$.list.onApplyFilters([filterPayload]);
+                    this.$.list.$.filter.generateFilter();
+                },
 
                 _onBookItinerary: function (e) {
                     console.log(e.detail);
                 }
-		    });
-	    	
-	    })();
+            });
+
+        })();
     </script>
 </dom-module>
