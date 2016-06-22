@@ -31,22 +31,15 @@ Example:
         	id="list"
         	filter-api="[[apiBaseUrl]]api/car/filter/[[searchId]]/rates?token=[[authToken]]"
         	filter-results-api="[[apiBaseUrl]]api/car/results/filter/[[searchId]]/rates?token=[[authToken]]&$select=Name,Category,Capacity,Baggage,AirConditioning,Transmission,Doors,HeroImageUrl,IsPostPaid,Source,Id,Fare,PickupInfo,DropoffInfo,Brand" 
-        	with-filter
-        	token-param="inventories"
-        	redirect-link="[[redirectLink]]"
-        	currency="[[currency]]"
-            auto
-            update-filters
-            no-results-filtered-message="We could not find any cars for the filters you have applied."
-            no-results-found-message="We could not find any cars for your search."
-            no-results-filtered-for-search-term-message="We could not find any car names containing 'SEARCHTERM’."
-            sort-by="+desc">
+        	filter-results-api="[[apiBaseUrl]]api/car/results/filter/[[searchId]]/rates?token=[[authToken]]">
             <template>
             <div>
                 <t-car-result-item 
                     itinerary=[[item]]
                     on-book-car-itinerary="_onBookItinerary"
-                    price=[[minPrice]]>
+                    price=[[minPrice]]
+                    currency="[[currency]]"
+                    book-period="2">
                 </t-car-result-item>
             </div>
             </template>
