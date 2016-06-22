@@ -23,15 +23,16 @@ Example:
         :host {
             display: block;
         }
-        t-car-result-item {
-
-        }
         </style>
         <t-list
         	id="list"
         	filter-api="[[apiBaseUrl]]api/car/filter/[[searchId]]/rates?token=[[authToken]]"
         	filter-results-api="[[apiBaseUrl]]api/car/results/filter/[[searchId]]/rates?token=[[authToken]]&$select=Name,Category,Capacity,Baggage,AirConditioning,Transmission,Doors,HeroImageUrl,IsPostPaid,Source,Id,Fare,PickupInfo,DropoffInfo,Brand" 
-        	filter-results-api="[[apiBaseUrl]]api/car/results/filter/[[searchId]]/rates?token=[[authToken]]">
+            with-filter
+            update-filters
+            token-param="inventories"
+            redirect-link="[[redirectLink]]"
+            currency="[[currency]]">
             <template>
             <div>
                 <t-car-result-item 

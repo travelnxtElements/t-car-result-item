@@ -58,14 +58,17 @@ Example:
             <div class="imageArea">
                 <t-image src="{{itinerary.heroImageUrl}}"></t-image>
                 <div>
-                <b>{{category}}</b>
+                <b>{{itinerary.category}}</b>
                 &emsp;&emsp;&emsp;&emsp;&emsp;
                 <b>{{price}}</b></div>
             </div>
         </template>
+        <br>
         <div><b>{{itinerary.name}}</b></div>
+        <br>
         <div>{{itinerary.vehicleType}}</div>
         <div>{{itinerary.pickupInfo.address}}</div>
+        <br>
         <div class="logoArea">
             <t-image src="{{itinerary.brand.logo}}"></t-image>
         </div>
@@ -81,10 +84,12 @@ Example:
         <br>
         <div><b>drop-off to</b></div>
         <div>[[itinerary.dropoffInfo.address]]</div>
-
-        <t-button id="search" class="primary row" on-click="_bookCar" type="button" label="book" /></t-button>
+        <br>
 
         <div>{{_getDisplayFare(_displayPrice.money.amount)}}</div>
+        <br>
+
+        <t-button id="search" class="primary row" on-click="_bookCar" type="button" label="book" /></t-button>
 
     </template>
     <script>
