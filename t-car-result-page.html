@@ -139,6 +139,9 @@ Example:
                     if (!searchId || !category || !minPrice) {
                         return;
                     }
+
+                    this.$.sessionStore.load();
+
                     filterPayload.name = category;
                     filterPayload.label = category;
 
@@ -166,6 +169,12 @@ Example:
                         this.fire('car-select', this.itinerary);
                         this.$.sessionStore.value = this._getSessionObject();
                         this.$.sessionStore.save()
+                    }
+                },
+
+                onSessionLoad: function () {
+                    if (this.$.sessionStore.value) {
+                        this.itinerary = this.$.sessionStore.value.itinerary;
                     }
                 },
 
