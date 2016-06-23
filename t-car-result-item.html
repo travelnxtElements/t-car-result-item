@@ -60,7 +60,7 @@ Example:
                 <div>
                 <b>{{itinerary.category}}</b>
                 &emsp;&emsp;&emsp;&emsp;&emsp;
-                <b>{{price}}</b></div>
+                <b>{{currency}} {{price}} Avg. PER DAY</b></div>
             </div>
         </template>
         <br>
@@ -123,7 +123,7 @@ Example:
             behaviors: [TravelNxt.Behaviors.FareBehavior],
 
             observers: [
-                '_onItineraryUpdate(itinerary, bookPeriod)'
+                '_onItineraryUpdate(itinerary)'
             ],
 
             _onItineraryUpdate: function() {    
@@ -135,7 +135,7 @@ Example:
 
             _getDisplayFare: function(amount) {
                 if (amount) {
-                    return this.currency + ' ' + Math.ceil(amount) + ' for ' + this.bookPeriod + ' days';
+                    return this.currency + ' ' + Math.ceil(amount) + ' total';
                 }
                 return null;
             },
