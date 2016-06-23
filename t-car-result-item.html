@@ -141,9 +141,7 @@ Example:
             },
 
             _bookCar: function () {
-                this.fire('book-car-itinerary', {
-                    itineraryId: this.itinerary.id
-                });
+                this.fire('book-car-itinerary', this.itinerary.id);
             }
         });
     })();

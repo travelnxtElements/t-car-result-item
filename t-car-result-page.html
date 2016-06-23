@@ -1,7 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../t-sessionstorage/t-sessionstorage.html">
 <link rel="import" href="../t-list/t-list.html">
 <link rel="import" href="../t-notify/t-notify.html">
 <link rel="import" href="t-car-result-item.html">
+<link rel="import" href="../t-notify/t-notify.html">
 <!--
 A comment describing this element
 
@@ -24,6 +26,11 @@ Example:
             display: block;
         }
         </style>
+
+        <content select="t-header"></content> 
+
+        <t-notify id="notify"></t-notify>
+
         <t-list
             id="list"
             filter-api="[[apiBaseUrl]]api/car/filter/[[searchId]]/rates?token=[[authToken]]"
@@ -37,7 +44,6 @@ Example:
             <div>
                 <t-car-result-item 
                     itinerary=[[item]]
-                    on-book-car-itinerary="_onBookItinerary"
                     price=[[minPrice]]
                     currency="[[currency]]"
                     book-period="2">
@@ -45,6 +51,13 @@ Example:
             </div>
             </template>
         </t-list>
+
+        <t-sessionstorage
+            id="sessionStore"
+            key="Car_Result_Data"
+            api-url-format="[[apiUrlFormat]]"
+            on-t-sessionstorage-load-success="onSessionLoad">
+        </t-sessionstorage>
 
     </template>
     <script>
@@ -62,7 +75,7 @@ Example:
                 is: 't-car-result-page',
 
                 observers: [
-                    '_searchIdUpdated(searchId, category)'
+                    '_updateCarResults(searchId, category, minPrice)'
                 ],
 
                 properties: {
@@ -71,38 +84,35 @@ Example:
                      * <p>This string is query string containing token value</p>
                     */
                     authToken: {
-                        type: String,
-                        value: ''
+                        type: String
                     },
 
                     /*
                      * <p>This property holds the value of api base URL</p>
                     */
                     apiBaseUrl: {
-                        type: String,
-                        value: ''
+                        type: String
                     },
 
                     /*
                      * <p>This property holds the value of web api URL format</p>
                     */
                     apiUrlFormat: {
-                        type: String,
-                        value: ''
+                        type: String
+                    },
+                    itineraryId: {
+                        type: String
                     },
                     searchId: {
-                        type: String,
-                        value: ''
+                        type: String
                     },
 
                     category: {
-                        type: String,
-                        value: ''
+                        type: String
                     },
 
                     minPrice: {
-                        type: String,
-                        value: ''
+                        type: String
                     },
 
                     currency: {
@@ -111,8 +121,7 @@ Example:
                     },
 
                     redirectLink: {
-                        type: String,
-                        value: ''
+                        type: String
                     },
 
                     list: {
@@ -121,8 +130,12 @@ Example:
                     }
                 },
 
-                _searchIdUpdated: function (searchId, category) {
-                    if (!searchId || !category) {
+                listeners: {
+                    'book-car-itinerary': '_onBookItinerary'
+                },
+
+                _updateCarResults: function (searchId, category, minPrice) {
+                    if (!searchId || !category || !minPrice) {
                         return;
                     }
                     filterPayload.name = category;
@@ -147,7 +160,18 @@ Example:
                 },
 
                 _onBookItinerary: function (e) {
-                    console.log(e.detail);
+                    if (e && e.detail) {
+                        this.itineraryId = e.detail;
+                        this.fire('car-select', this.itineraryId);
+                        this.$.sessionStore.value = this._getSessionObject();
+                        this.$.sessionStore.save()
+                    }
+                },
+
+                _getSessionObject: function () {
+                    return {
+                        itineraryId: this.itineraryId
+                    };
                 }
             });
 

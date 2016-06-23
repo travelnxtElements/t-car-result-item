@@ -5,6 +5,8 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
     "t-image": "atomelements/t-image#^1.2.1",
+    "t-sessionstorage": "travelnxtElements/t-sessionstorage#^1.0.0",
+    "t-notify": "atomelements/t-notify#^1.1.1",
     "t-shared-lib": "travelnxtelements/t-shared-lib#^2.0.0",
     "t-list": "atomelements/t-list#^1.1.3",
     "t-button": "atomelements/t-button#^1.2.0"
