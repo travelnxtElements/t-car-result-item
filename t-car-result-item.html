@@ -141,7 +141,10 @@ Example:
             },
 
             _bookCar: function () {
-                this.fire('book-car-itinerary', this.itinerary.id);
+                if (this.itinerary.fare) {
+                    this.itinerary.fare = null;
+                }
+                this.fire('book-car-itinerary', this.itinerary);
             }
         });
     })();

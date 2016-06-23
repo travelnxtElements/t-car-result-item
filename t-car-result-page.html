@@ -100,8 +100,9 @@ Example:
                     apiUrlFormat: {
                         type: String
                     },
-                    itineraryId: {
-                        type: String
+                    itinerary: {
+                        type: Object,
+                        notify: true
                     },
                     searchId: {
                         type: String
@@ -161,8 +162,8 @@ Example:
 
                 _onBookItinerary: function (e) {
                     if (e && e.detail) {
-                        this.itineraryId = e.detail;
-                        this.fire('car-select', this.itineraryId);
+                        this.itinerary = e.detail;
+                        this.fire('car-select', this.itinerary);
                         this.$.sessionStore.value = this._getSessionObject();
                         this.$.sessionStore.save()
                     }
@@ -170,7 +171,7 @@ Example:
 
                 _getSessionObject: function () {
                     return {
-                        itineraryId: this.itineraryId
+                        itinerary: this.itinerary
                     };
                 }
             });
