@@ -32,7 +32,7 @@ Example:
         
         .imageArea {
             width: 100%;
-            height: 150px;
+            height: 200px;
             padding: 10px 0 40px 0;
             margin-bottom: 20px;
             border-bottom: solid black thin;
@@ -56,38 +56,60 @@ Example:
         </style>
         <template is="dom-if" if="[[isFirstItem]]">
             <div class="imageArea">
-                <t-image src="{{itinerary.heroImageUrl}}"></t-image>
+                <t-image src="[[itinerary.heroImageUrl]]"></t-image>
                 <div>
-                <b>{{itinerary.category}}</b>
-                &emsp;&emsp;&emsp;&emsp;&emsp;
-                <b>{{currency}} {{price}} Avg. PER DAY</b></div>
+                <b>[[itinerary.category]]</b>
+                &emsp;&emsp;&emsp;&emsp;
+                <b>[[currency]] [[price]] AVG PER DAY</b></div>
             </div>
         </template>
         <br>
-        <div><b>{{itinerary.name}}</b></div>
+
+        <div><b>name</b></div>
+        <div><b>[[itinerary.name]]</b></div>
         <br>
-        <div>{{itinerary.vehicleType}}</div>
-        <div>{{itinerary.pickupInfo.address}}</div>
+
+        <div><b>is post paid</b></div>
+        <div>[[itinerary.isPostPaid]]</div>
         <br>
+
         <div class="logoArea">
-            <t-image src="{{itinerary.brand.logo}}"></t-image>
+            <t-image src="[[itinerary.brand.logo]]"></t-image>
         </div>
-        <div>{{itinerary.capacity}}</div>
-        <div>{{itinerary.baggage}}</div>
-        <div>{{itinerary.airConditioning}}</div>
-        <div>{{itinerary.transmission}}</div>
-        <div>{{itinerary.doors}}</div>
+        <br>
+
+        <div><b>capacity</b></div>
+        <div>[[itinerary.capacity]]</div>
+        <br>
+
+        <div><b>baggage</b></div>
+        <div>[[itinerary.baggage]]</div>
+        <br>
+
+        <div><b>air conditioning</b></div>
+        <div>[[itinerary.airConditioning]]</div>
+        <br>
+
+        <div><b>transmission</b></div>
+        <div>[[itinerary.transmission]]</div>
+        <br>
+
+        <div><b>doors</b></div>
+        <div>[[itinerary.doors]]</div>
         <br>
 
         <div><b>pick-up from</b></div>
         <div>[[itinerary.pickupInfo.address]]</div>
         <br>
+
         <div><b>drop-off to</b></div>
         <div>[[itinerary.dropoffInfo.address]]</div>
         <br>
 
-        <div>{{_getDisplayFare(_displayPrice.money.amount)}}</div>
+
+        <div>[[_getDisplayFare(_displayPrice.money.amount)]]</div>
         <br>
+
 
         <t-button id="search" class="primary row" on-click="_bookCar" type="button" label="book" /></t-button>
 
