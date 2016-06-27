@@ -79,6 +79,9 @@ Example:
         .left-section .item{
             margin-bottom: 3px;
         }
+        .uppercase{
+        	text-transform: uppercase;
+        }
         </style>
         <template is="dom-if" if="[[isFirstItem]]">
             <t-image sizing="contain" class="imageArea" height="120" src="[[itinerary.heroImageUrl]]"></t-image>
@@ -92,11 +95,14 @@ Example:
         </template>
         <div class="font-12 secondary-text">
             <div class="section-small layout horizontal">
-                <div class="logo-area flex">
+                <div class="logo-area flex font-14">
                     <template is="dom-if" if="[[itinerary.brand.logo]]">
-                        <img src$="[[itinerary.brand.logo]]" alt$="[[itinerary.name]]" />
+                        <img src$="[[itinerary.brand.logo]]" alt$="[[itinerary.brand.name]]" />
                     </template>
-                    <div class="font-14">[[itinerary.name]]</div>
+                    <template is="dom-if" if="[[!itinerary.brand.logo]]">
+                        <div class="font-semi uppercase">[[itinerary.brand.name]]</div>
+                    </template>
+                    <div>[[itinerary.name]]</div>
                 </div>
                 <template is="dom-if" if="[[itinerary.isPostPaid]]">
                     <div class="right-section">
@@ -107,11 +113,12 @@ Example:
             <div class="devider"></div>
             <div class="section-small layout horizontal">
                 <div class="icons-area flex layout horizontal">
-                    <div class="icon-item">
-                        <iron-icon icon="car:seat"></iron-icon>
-                        <span class="text">[[itinerary.capacity]]</span>
-                    </div>
-
+                    <template is="dom-if" if="[[_checkIfNotSpecified(itinerary.capacity)]]">
+	                    <div class="icon-item">
+	                        <iron-icon icon="car:seat"></iron-icon>
+	                        <span class="text">[[itinerary.capacity]]</span>
+	                    </div>
+					</template>
                     <div class="icon-item">
                         <iron-icon icon="car:luggage"></iron-icon>
                         <span class="text">[[itinerary.baggage]]</span>
@@ -122,11 +129,12 @@ Example:
                         <span class="text">[[_checkIfAutomatic(itinerary.transmission)]]</span>
                     </div>
 
-                    <div class="icon-item">
-                        <iron-icon icon="car:door"></iron-icon>
-                        <span class="text">[[itinerary.doors]]</span>
-                    </div>
-                    
+                    <template is="dom-if" if="[[_checkIfNotSpecified(itinerary.doors)]]">
+	                    <div class="icon-item">
+	                        <iron-icon icon="car:door"></iron-icon>
+	                        <span class="text">[[itinerary.doors]]</span>
+	                    </div>
+                    </template>
                     <template is="dom-if" if="[[itinerary.airConditioning]]">
                         <div class="icon-item">
                             <iron-icon icon="car:ac"></iron-icon>
@@ -241,6 +249,17 @@ Example:
                     return 'Auto';
                 }
                 return value;
+            },
+
+
+            _checkIfNotSpecified:  function(value){
+                if(!value){
+                    return false;
+                }
+                if (value.toLowerCase() === 'notspecified') {
+                    return false;
+                }
+                return true;
             },
 
             _isSameString: function(val1,val2){
