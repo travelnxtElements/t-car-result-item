@@ -27,14 +27,14 @@ Example:
         }
         </style>
 
-        <content select="t-header"></content> 
-
         <t-notify id="notify"></t-notify>
+
+        <content select="t-header"></content>
 
         <t-list
             id="list"
-            filter-api="[[apiBaseUrl]]api/car/filter/[[searchId]]/rates?token=[[authToken]]"
-            filter-results-api="[[apiBaseUrl]]api/car/results/filter/[[searchId]]/rates?token=[[authToken]]&$select=Name,Category,Capacity,Baggage,AirConditioning,Transmission,Doors,HeroImageUrl,IsPostPaid,Source,Id,Fare,PickupInfo,DropoffInfo,Brand" 
+            filter-api="[[apiBaseUrl]]api/car/filter/[[queryParams.searchId]]/rates?token=[[authToken]]"
+            filter-results-api="[[apiBaseUrl]]api/car/results/filter/[[queryParams.searchId]]/rates?token=[[authToken]]&$select=Name,Category,Capacity,Baggage,AirConditioning,Transmission,Doors,HeroImageUrl,IsPostPaid,Source,Id,Fare,PickupInfo,DropoffInfo,Brand" 
             with-filter
             update-filters
             token-param="inventories"
@@ -44,7 +44,7 @@ Example:
             <div>
                 <t-car-result-item 
                     itinerary=[[item]]
-                    price=[[minPrice]]
+                    price=[[queryParams.minPrice]]
                     currency="[[currency]]"
                     book-period="2">
                 </t-car-result-item>
@@ -75,10 +75,21 @@ Example:
                 is: 't-car-result-page',
 
                 observers: [
-                    '_updateCarResults(searchId, category, minPrice)'
+                    '_updateCarResults(queryParams.selectedCategory, queryParams.minPrice, visible)'
                 ],
 
                 properties: {
+
+                    visible: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+
+                    queryParams: {
+                        type: Object,
+                        notify: true
+                    },
 
                     /*
                      * <p>This string is query string containing token value</p>
@@ -104,17 +115,6 @@ Example:
                         type: Object,
                         notify: true
                     },
-                    searchId: {
-                        type: String
-                    },
-
-                    category: {
-                        type: String
-                    },
-
-                    minPrice: {
-                        type: String
-                    },
 
                     currency: {
                         type: String,
@@ -135,15 +135,15 @@ Example:
                     'book-car-itinerary': '_onBookItinerary'
                 },
 
-                _updateCarResults: function (searchId, category, minPrice) {
-                    if (!searchId || !category || !minPrice) {
+                _updateCarResults: function (selectedCategory, minPrice, visible) {
+                    if (!selectedCategory || !minPrice || !visible) {
                         return;
                     }
 
                     this.$.sessionStore.load();
 
-                    filterPayload.name = category;
-                    filterPayload.label = category;
+                    filterPayload.name = selectedCategory;
+                    filterPayload.label = selectedCategory;
 
                     this.$.list.sortParams = [{
                         key: "Price",
