@@ -167,7 +167,7 @@ Example:
                     if (e && e.detail) {
                         this.itinerary = e.detail;
                         this.fire('car-select', this.itinerary);
-                        this.$.sessionStore.value = this._getSessionObject();
+                        this.$.sessionStore.value = this.itinerary;
                         this.$.sessionStore.save()
                     }
                 },
@@ -176,12 +176,6 @@ Example:
                     if (this.$.sessionStore.value) {
                         this.itinerary = this.$.sessionStore.value.itinerary;
                     }
-                },
-
-                _getSessionObject: function () {
-                    return {
-                        itinerary: this.itinerary
-                    };
                 }
             });
 
