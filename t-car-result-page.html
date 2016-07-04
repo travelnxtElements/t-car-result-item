@@ -39,7 +39,8 @@ Example:
             update-filters
             token-param="inventories"
             redirect-link="[[redirectLink]]"
-            currency="[[currency]]">
+            currency="[[currency]]"
+            data="{{carResults}}">
             <template>
             <div>
                 <t-car-result-item 
@@ -75,7 +76,7 @@ Example:
                 is: 't-car-result-page',
 
                 observers: [
-                    '_updateCarResults(queryParams.selectedCategory, queryParams.minPrice, visible)'
+                    '_updateCarResults(queryParams.selectedCategory)'
                 ],
 
                 properties: {
@@ -111,7 +112,8 @@ Example:
                     apiUrlFormat: {
                         type: String
                     },
-                    itinerary: {
+
+                    carResults: {
                         type: Object,
                         notify: true
                     },
@@ -135,12 +137,10 @@ Example:
                     'book-car-itinerary': '_onBookItinerary'
                 },
 
-                _updateCarResults: function (selectedCategory, minPrice, visible) {
-                    if (!selectedCategory || !minPrice || !visible) {
+                _updateCarResults: function (selectedCategory) {
+                    if (!selectedCategory || !this.queryParams.minPrice) {
                         return;
                     }
-
-                    this.$.sessionStore.load();
 
                     filterPayload.name = selectedCategory;
                     filterPayload.label = selectedCategory;
@@ -165,18 +165,17 @@ Example:
 
                 _onBookItinerary: function (e) {
                     if (e && e.detail) {
-                        this.itinerary = e.detail;
-                        this.fire('car-select', this.itinerary);
-                        this.$.sessionStore.value = this.itinerary;
-                        this.$.sessionStore.save()
-                    }
-                },
 
-                onSessionLoad: function () {
-                    if (this.$.sessionStore.value) {
-                        this.itinerary = this.$.sessionStore.value.itinerary;
+                        this.queryParams = {
+                            searchId: this.queryParams.searchId,
+                            selectedCategory: this.queryParams.selectedCategory,
+                            minPrice: this.queryParams.minPrice,
+                            carId: e.detail.id
+                        }
+                        this.fire('car-select');
                     }
                 }
+
             });
 
         })();
