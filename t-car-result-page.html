@@ -33,8 +33,8 @@ Example:
 
         <t-list
             id="list"
-            filter-api="[[apiBaseUrl]]api/car/filter/[[queryParams.searchId]]/rates?token=[[authToken]]"
-            filter-results-api="[[apiBaseUrl]]api/car/results/filter/[[queryParams.searchId]]/rates?token=[[authToken]]&$select=Name,Category,Capacity,Baggage,AirConditioning,Transmission,Doors,HeroImageUrl,IsPostPaid,Source,Id,Fare,PickupInfo,DropoffInfo,Brand" 
+            filter-api="[[apiBaseUrl]]api/car/filter/[[searchId]]/rates?token=[[authToken]]"
+            filter-results-api="[[apiBaseUrl]]api/car/results/filter/[[searchId]]/rates?token=[[authToken]]&$select=Name,Category,Capacity,Baggage,AirConditioning,Transmission,Doors,HeroImageUrl,IsPostPaid,Source,Id,Fare,PickupInfo,DropoffInfo,Brand" 
             with-filter
             update-filters
             token-param="inventories"
@@ -45,7 +45,7 @@ Example:
             <div>
                 <t-car-result-item 
                     itinerary=[[item]]
-                    price=[[queryParams.minPrice]]
+                    price=[[minPrice]]
                     currency="[[currency]]"
                     book-period="2">
                 </t-car-result-item>
@@ -76,10 +76,17 @@ Example:
                 is: 't-car-result-page',
 
                 observers: [
-                    '_updateCarResults(queryParams.selectedCategory)'
+                    '_updateCarResults(selectedCategory, minPrice, visible)'
                 ],
 
                 properties: {
+
+                    /*
+                     * <p>This string is query string containing token value</p>
+                    */
+                    authToken: {
+                        type: String
+                    },
 
                     visible: {
                         type: Boolean,
@@ -87,9 +94,12 @@ Example:
                         notify: true
                     },
 
-                    queryParams: {
-                        type: Object,
-                        notify: true
+                    selectedCategory: {
+                        type: String
+                    },
+
+                    minPrice: {
+                        type: String
                     },
 
                     /*
@@ -118,6 +128,11 @@ Example:
                         notify: true
                     },
 
+                    itinerary: {
+                        type: Object,
+                        notify: true
+                    },
+
                     currency: {
                         type: String,
                         value: 'USD'
@@ -137,8 +152,8 @@ Example:
                     'book-car-itinerary': '_onBookItinerary'
                 },
 
-                _updateCarResults: function (selectedCategory) {
-                    if (!selectedCategory || !this.queryParams.minPrice) {
+                _updateCarResults: function (selectedCategory, minPrice, visible) {
+                    if (!selectedCategory || !minPrice || !visible) {
                         return;
                     }
 
@@ -166,15 +181,18 @@ Example:
                 _onBookItinerary: function (e) {
                     if (e && e.detail) {
 
-                        this.queryParams = {
-                            searchId: this.queryParams.searchId,
-                            selectedCategory: this.queryParams.selectedCategory,
-                            minPrice: this.queryParams.minPrice,
-                            carId: e.detail.id
-                        }
+                        this.itinerary = e.detail;
                         this.fire('car-select');
+                        this.$.sessionStore.value = this.itinerary;
+                        this.$.sessionStore.save();
                     }
+                },
+
+                onSessionLoad: function () {
+                    if (this.$.sessionStore.value) {
+                        this.itinerary = this.$.sessionStore.value.itinerary;
                 }
+            }
 
             });
 
