@@ -76,6 +76,9 @@ Example:
             margin: 0 var(--normal-spacing,10px);
             border-bottom: 1px dashed var(--grey-two,#eeeeee);
         }
+        .devider.last-border{
+            border-bottom: 1px solid var(--grey-two,#eeeeee);
+        }
         .left-section .item{
             margin-bottom: 5px;
         }
@@ -166,7 +169,7 @@ Example:
                     <t-button id="search" class="primary" on-click="_bookCar" type="button" label="book" /></t-button>
                 </div>
             </div>
-            <div class="devider"></div>
+            <div class="devider last-border"></div>
         </div>
     </template>
     <script>
