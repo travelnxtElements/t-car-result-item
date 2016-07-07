@@ -39,8 +39,7 @@ Example:
             update-filters
             token-param="inventories"
             redirect-link="[[redirectLink]]"
-            currency="[[currency]]"
-            data="{{carResults}}">
+            currency="[[currency]]">
             <template>
             <div>
                 <t-car-result-item 
@@ -57,12 +56,14 @@ Example:
             id="sessionStore"
             key="Car_Result_Data"
             api-url-format="[[apiUrlFormat]]"
-            on-t-sessionstorage-load-success="onSessionLoad">
+            on-t-sessionstorage-load-success="_onSessionLoad">
         </t-sessionstorage>
-
-    </template>
+    </template>    
     <script>
+
         (function () {
+
+            'use strict'
 
             var filterPayload = {
                 category: "Category",
@@ -73,20 +74,10 @@ Example:
             };
 
             Polymer({
+
                 is: 't-car-result-page',
 
-                observers: [
-                    '_updateCarResults(selectedCategory, minPrice, visible)'
-                ],
-
                 properties: {
-
-                    /*
-                     * <p>This string is query string containing token value</p>
-                    */
-                    authToken: {
-                        type: String
-                    },
 
                     visible: {
                         type: Boolean,
@@ -110,6 +101,13 @@ Example:
                     },
 
                     /*
+                     * <p>This string is query string containing token value</p>
+                    */
+                    searchId: {
+                        type: String
+                    },
+
+                    /*
                      * <p>This property holds the value of api base URL</p>
                     */
                     apiBaseUrl: {
@@ -123,13 +121,14 @@ Example:
                         type: String
                     },
 
-                    carResults: {
+                    itinerary: {
                         type: Object,
                         notify: true
                     },
 
-                    itinerary: {
-                        type: Object,
+
+                    itineraryId: {
+                        type: String,
                         notify: true
                     },
 
@@ -148,12 +147,23 @@ Example:
                     }
                 },
 
+                observers: [
+                    '_visibleChange(visible)',
+                    '_updateCarResults(selectedCategory, authToken, searchId)'
+                ],
+
                 listeners: {
                     'book-car-itinerary': '_onBookItinerary'
                 },
 
-                _updateCarResults: function (selectedCategory, minPrice, visible) {
-                    if (!selectedCategory || !minPrice || !visible) {
+                _visibleChange: function (visible) {
+                    if (visible && (!this.selectedCategory || !this.minPrice || !this.authToken || !this.searchId)) {
+                        this.fire('go-to-search');
+                    }
+                },
+
+                _updateCarResults: function (selectedCategory, authToken, searchId) {
+                    if (!selectedCategory || !this.minPrice || !authToken || !searchId) {
                         return;
                     }
 
@@ -182,18 +192,18 @@ Example:
                     if (e && e.detail) {
 
                         this.itinerary = e.detail;
+                        this.itineraryId = e.detail.id;
                         this.fire('car-select');
                         this.$.sessionStore.value = this.itinerary;
                         this.$.sessionStore.save();
                     }
                 },
 
-                onSessionLoad: function () {
+                _onSessionLoad: function () {
                     if (this.$.sessionStore.value) {
                         this.itinerary = this.$.sessionStore.value.itinerary;
+                    }
                 }
-            }
-
             });
 
         })();
