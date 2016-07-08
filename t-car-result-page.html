@@ -149,7 +149,7 @@ Example:
 
                 observers: [
                     '_visibleChange(visible)',
-                    '_updateCarResults(selectedCategory, authToken, searchId)'
+                    '_updateCarResults(authToken, selectedCategory, searchId)'
                 ],
 
                 listeners: {
@@ -162,7 +162,7 @@ Example:
                     }
                 },
 
-                _updateCarResults: function (selectedCategory, authToken, searchId) {
+                _updateCarResults: function (authToken, selectedCategory, searchId) {
                     if (!selectedCategory || !this.minPrice || !authToken || !searchId) {
                         return;
                     }
@@ -193,6 +193,7 @@ Example:
 
                         this.itinerary = e.detail;
                         this.itineraryId = e.detail.id;
+
                         this.fire('car-select');
                         this.$.sessionStore.value = this.itinerary;
                         this.$.sessionStore.save();
