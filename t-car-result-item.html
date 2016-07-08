@@ -87,7 +87,7 @@ Example:
         }
         </style>
         <template is="dom-if" if="[[isFirstItem]]">
-            <t-image sizing="contain" class="imageArea" height="120" src="[[itinerary.heroImageUrl]]"></t-image>
+            <t-image loading-icon="[[carIcon]]" sizing="contain" class="imageArea" height="120" src="[[itinerary.heroImageUrl]]"></t-image>
             <div class="font-12 category primary-light-text layout horizontal center border-bottom">
                 <span class="font-18 ">[[_checkNotSpecifiedCategory(itinerary.category)]]</span>
                 <span class="flex"></span>
