@@ -3,7 +3,7 @@
 <link rel="import" href="../t-list/t-list.html">
 <link rel="import" href="../t-notify/t-notify.html">
 <link rel="import" href="t-car-result-item.html">
-<link rel="import" href="../t-notify/t-notify.html">
+<link rel="import" href="../t-policy/t-policy.html">
 <!--
 A comment describing this element
 
@@ -31,6 +31,15 @@ Example:
 
         <content select="t-header"></content>
 
+        <t-policy id="policy"
+            external-link
+            label="Policies"
+            api-relative-url="api/ShoppingCart/add"
+            api-base-url="[[apiBaseUrl]]"
+            auth-token="[[authToken]]"
+            search-id="[[searchId]]">
+        </t-policy>
+    
         <t-list
             id="list"
             filter-api="[[apiBaseUrl]]api/car/filter/[[searchId]]/rates?token=[[authToken]]"
@@ -156,7 +165,17 @@ Example:
                 ],
 
                 listeners: {
-                    'book-car-itinerary': '_onBookItinerary'
+                    'book-car-itinerary': '_onBookItinerary',
+                    'policy-click':'_initiatePolicyCall'
+                },
+
+                _initiatePolicyCall: function (event){
+                    var itineraryId = event.detail.itineraryId;
+                    if (itineraryId != this.$.policy.inventoryId) {
+                        this.$.policy.inventoryId = itineraryId;
+                        this.$.policy.policies = null;
+                    }
+                    this.$.policy.initiatePolicyCall();
                 },
 
                 _visibleChange: function (visible) {

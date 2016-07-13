@@ -163,7 +163,7 @@ Example:
                     <template is="dom-if" if="[[_isSameString(itinerary.pickupInfo.address,itinerary.dropoffInfo.address)]]">
                         <div class="item">DROP-OFF - Same as pick-up location</div>
                     </template>
-                    <div class="link-style">Policy</div>
+                    <label id="policy-label" class="link-style font-12" on-tap="_policyClick">Policy</label>
                 </div>
                 <div class="right-section">
                     <t-button id="search" class="primary" on-click="_bookCar" type="button" label="book" /></t-button>
@@ -220,6 +220,9 @@ Example:
                     return value;
                 },
 
+                _policyClick: function () {
+                    this.fire('policy-click', { itineraryId: this.itinerary.id });
+                },
 
                 _checkIfNotSpecified:  function(value){
                     if(!value){
