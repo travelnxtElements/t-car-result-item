@@ -183,6 +183,9 @@ Example:
                     if (visible && (!this.selectedCategory || !this.minPrice || !this.authToken || !this.searchId)) {
                         this.fire('go-to-search');
                     }
+
+                    //initiate policy component
+                    this.$.policy.initiatePolicyView();
                 },
 
                 _updateCarResults: function (authToken, selectedCategory, searchId) {
