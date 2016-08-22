@@ -69,7 +69,7 @@
             api-relative-url="api/ShoppingCart/add"
             api-base-url="[[apiBaseUrl]]"
             auth-token="[[authToken]]"
-            search-id="[[searchId]]">
+            policy-request="[[_policyRequest]]">
         </t-policy>
     
         <t-list
@@ -220,6 +220,14 @@
                     list: {
                         type: Array,
                         value: []
+                    },
+
+                    /**
+                     * Policy request object
+                     * @type {Object}
+                     */
+                    _policyRequest: {
+                        type: Object
                     }
                 },
 
@@ -239,12 +247,23 @@
                  * @return {[Void]}
                  */
                 _initiatePolicyCall: function (event){
-                    var itineraryId = event.detail.itineraryId;
-                    if (itineraryId != this.$.policy.inventoryId) {
-                        this.$.policy.inventoryId = itineraryId;
+                    if (!this._policyRequest || this._policyRequest.itemInfos[0].inventoryId != event.detail.itineraryId) {
+                        this._updateCarPricingReq(event.detail.itineraryId);
                         this.$.policy.policies = null;
                     }
                     this.$.policy.initiatePolicyCall();
+                },
+
+                /**
+                 * updates pricing request needed for t-policies
+                 * @param  {[String]} itineraryId
+                 * @return {[Void]}
+                 */
+                _updateCarPricingReq: function (itineraryId) {
+                    this._policyRequest = { itemInfos: [{
+                                                inventoryId: itineraryId,
+                                                searchId: this.searchId
+                                            }]};
                 },
 
                 /**
