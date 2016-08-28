@@ -174,13 +174,13 @@
                 },
 
                 observers: [
-                    '__pageLoad(visible)',
-                    '__updatePage(selectedCategory)'
+                    '__pageLoad(visible)'
                 ],
 
                 listeners: {
                     'book-car-itinerary': '_onBookItinerary',
-                    'policy-click':'_initiatePolicyCall'
+                    'policy-click':'_initiatePolicyCall',                    
+                    'session-get-complete': '_updatePage'
                 },
 
                 /**
@@ -206,13 +206,13 @@
                  * @param  {[String]} searchId         Search id of recent search
                  * @return {[Void]}
                  */
-                __updatePage: function (selectedCategory) {
-                    if (!selectedCategory || !this.minPrice) {
+                _updatePage: function () {
+                    if (!this.selectedCategory || !this.minPrice) {
                         this.fire('go-to-search');
                     }
 
-                    filterPayload.name = selectedCategory;
-                    filterPayload.label = selectedCategory;
+                    filterPayload.name = this.selectedCategory;
+                    filterPayload.label = this.selectedCategory;
 
                     this.$.list.sortParams = [{
                         key: "Price",
