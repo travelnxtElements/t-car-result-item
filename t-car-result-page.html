@@ -4,6 +4,8 @@
 <link rel="import" href="../t-notify/t-notify.html">
 <link rel="import" href="t-car-result-item.html">
 <link rel="import" href="../t-policy/t-policy.html">
+<link rel="import" href="../t-behavior/t-page-behavior.html">
+<link rel="import" href="../t-behavior/t-session-behavior.html"/>
 <!--
     <h3>Details:</h3>
 
@@ -99,9 +101,9 @@
 
         <t-sessionstorage
             id="sessionStore"
-            key="Car_Result_Data"
             api-url-format="[[apiUrlFormat]]"
-            on-t-sessionstorage-load-success="_onSessionLoad">
+            on-t-sessionstorage-load-success="_onSessionGet"
+            on-t-sessionstorage-save-success="_onSessionSave">
         </t-sessionstorage>
     </template>    
     <script>
@@ -122,17 +124,12 @@
 
                 is: 't-car-result-page',
 
-                properties: {
+                behaviors: [
+                    TravelNxt.Behaviors.PageBehavior,
+                    TravelNxt.Behaviors.SessionBehavior
+                ],
 
-                    /**
-                     * This is used to show hide the page view
-                     * @type {Boolean}
-                     */
-                    visible: {
-                        type: Boolean,
-                        value: false,
-                        notify: true
-                    },
+                properties: {
 
                     /**
                      * Selected category among car category lists
@@ -148,61 +145,6 @@
                      */
                     minPrice: {
                         type: String
-                    },
-
-                    /*
-                     * <p>This string is query string containing token value</p>
-                    */
-                    authToken: {
-                        type: String
-                    },
-
-                    /*
-                     * <p>This string is query string containing token value</p>
-                    */
-                    searchId: {
-                        type: String
-                    },
-
-                    /*
-                     * <p>This property holds the value of api base URL</p>
-                    */
-                    apiBaseUrl: {
-                        type: String
-                    },
-
-                    /*
-                     * <p>This property holds the value of web api URL format</p>
-                    */
-                    apiUrlFormat: {
-                        type: String
-                    },
-
-                    /**
-                     * This is used to store the itinerary which user has chosen to book
-                     * @type {Object}
-                     */
-                    itinerary: {
-                        type: Object,
-                        notify: true
-                    },
-
-                    /**
-                     * This is used to store the itinerary id which user has chosen to book
-                     * @type {String}
-                     */
-                    itineraryId: {
-                        type: String,
-                        notify: true
-                    },
-
-                    /**
-                     * Curreny pf fare is passed here
-                     * @type {String}
-                     */
-                    currency: {
-                        type: String,
-                        value: 'USD'
                     },
 
                     /**
@@ -232,8 +174,8 @@
                 },
 
                 observers: [
-                    '_visibleChange(visible)',
-                    '_updateCarResults(authToken, selectedCategory, searchId)'
+                    '__pageLoad(visible)',
+                    '__updatePage(selectedCategory)'
                 ],
 
                 listeners: {
@@ -242,42 +184,19 @@
                 },
 
                 /**
-                 * This method initiates policy call by calling its method after setting `inventoryId` and `policies`
-                 * @param  {[event]} event
-                 * @return {[Void]}
-                 */
-                _initiatePolicyCall: function (event){
-                    if (!this._policyRequest || this._policyRequest.itemInfos[0].inventoryId != event.detail.itineraryId) {
-                        this._updateCarPricingReq(event.detail.itineraryId);
-                        this.$.policy.policies = null;
-                    }
-                    this.$.policy.initiatePolicyCall();
-                },
-
-                /**
-                 * updates pricing request needed for t-policies
-                 * @param  {[String]} itineraryId
-                 * @return {[Void]}
-                 */
-                _updateCarPricingReq: function (itineraryId) {
-                    this._policyRequest = { itemInfos: [{
-                                                inventoryId: itineraryId,
-                                                searchId: this.searchId
-                                            }]};
-                },
-
-                /**
                  * This is observer method and executed every time `visible` changes
                  * @param  {[Boolean]} visible Describes whether to display view or not
                  * @return {[Void]}
                  */
-                _visibleChange: function (visible) {
-                    if (visible && (!this.selectedCategory || !this.minPrice || !this.authToken || !this.searchId)) {
-                        this.fire('go-to-search');
+                __pageLoad: function (visible) {
+                    if (!visible) {
+                        return;
                     }
 
                     //initiate policy component
                     this.$.policy.initiatePolicyView();
+
+                    this._syncSession();
                 },
 
                 /**
@@ -287,9 +206,9 @@
                  * @param  {[String]} searchId         Search id of recent search
                  * @return {[Void]}
                  */
-                _updateCarResults: function (authToken, selectedCategory, searchId) {
-                    if (!selectedCategory || !this.minPrice || !authToken || !searchId) {
-                        return;
+                __updatePage: function (selectedCategory) {
+                    if (!selectedCategory || !this.minPrice) {
+                        this.fire('go-to-search');
                     }
 
                     filterPayload.name = selectedCategory;
@@ -313,6 +232,51 @@
                     this.$.list.$.filter.generateFilter();
                 },
 
+                _syncSession: function () {
+                    this._data = [{
+                        key: 'Car_Min_Price',
+                        propertyName: 'minPrice'
+                    }, {
+                        key: 'Car_Search_Criteria',
+                        propertyName: 'searchCriteria'
+                    }, {
+                        key: 'Car_Search_Id',
+                        propertyName: 'searchId'
+                    }, {
+                        key: 'Car_Category',
+                        propertyName: 'selectedCategory'
+                    }];
+
+                    this.getSession();
+                },
+
+                /**
+                 * This method initiates policy call by calling its method after setting `inventoryId` and `policies`
+                 * @param  {[event]} event
+                 * @return {[Void]}
+                 */
+                _initiatePolicyCall: function (event){
+                    if (!this._policyRequest || this._policyRequest.itemInfos[0].inventoryId != event.detail.itineraryId) {
+                        this._updateCarPricingReq(event.detail.itineraryId);
+                        this.$.policy.policies = null;
+                    }
+                    this.$.policy.initiatePolicyCall();
+                },
+
+                /**
+                 * updates pricing request needed for t-policies
+                 * @param  {[String]} itineraryId
+                 * @return {[Void]}
+                 */
+                _updateCarPricingReq: function (itineraryId) {
+                    this._policyRequest = { 
+                        itemInfos: [{
+                            inventoryId: itineraryId,
+                            searchId: this.searchId
+                        }]
+                    };
+                },
+
                 /**
                  * This is Event driven method, called when `book-car-itinerary` event is fired. This method fires `car-select` event and also saves the selected itinerary in sessionStore
                  * @param  {[event]} e
@@ -322,11 +286,15 @@
                     if (e && e.detail) {
 
                         this.itinerary = e.detail;
-                        this.itineraryId = e.detail.id;
+
+                        this._data = [{
+                            key: 'Car_Itinerary',
+                            value: this.itinerary
+                        }];
+
+                        this.setSession();
 
                         this.fire('car-select');
-                        this.$.sessionStore.value = this.itinerary;
-                        this.$.sessionStore.save();
                     }
                 },
 
